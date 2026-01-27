@@ -133,22 +133,24 @@
         opacity: 0; cursor: pointer; z-index: 2; 
     }
 
-    /* --- PERBAIKAN POSISI HURUF (CENTERING) --- */
+    /* --- CSS BARU UNTUK MEMAKSA TENGAH --- */
     .radio-label {
-        /* Ukuran Kotak Tetap */
-        width: 40px; 
-        height: 38px;
+        /* Paksa Ukuran Kotak */
+        width: 40px !important; 
+        height: 40px !important;
         
-        /* Flexbox untuk Center Mutlak */
-        display: flex;
-        justify-content: center; /* Kanan-Kiri Center */
-        align-items: center;     /* Atas-Bawah Center */
+        /* METODE GRID (Lebih ampuh dari Flexbox untuk kasus ini) */
+        display: grid !important;
+        place-content: center !important; /* Memaksa isi ke tengah secara vertikal & horizontal */
+        place-items: center !important;
         
-        /* Reset spacing agar huruf tidak lari */
-        padding: 0;
-        margin: 0;
-        line-height: 1; /* PENTING: Menghilangkan jarak baris font */
+        /* Reset semua pengganggu posisi */
+        padding: 0 !important;
+        margin: 0 !important;
+        line-height: 1 !important;
+        text-align: center !important;
         
+        /* Dekorasi */
         background: #fff; 
         border: 2px solid #e2e8f0; 
         border-radius: 8px; 
@@ -159,9 +161,8 @@
         transition: all 0.2s ease;
         color: #94a3b8; 
         
+        /* Mencegah teks terblok */
         -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
         user-select: none;
     }
 
