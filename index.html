@@ -8,193 +8,203 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        :root {
-            --primary: #0284c7;      
-            --accent: #06b6d4;       
-            --bg-page: #f0f9ff;      
-            --glass-bg: rgba(255, 255, 255, 0.75); 
-            --text-main: #334155;    
-            --input-bg: #ffffff;     
-            --shadow: 0 10px 40px -10px rgba(2, 132, 199, 0.2); 
-            --success: #22c55e;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-        }
+    :root {
+        --primary: #0284c7;      
+        --accent: #06b6d4;       
+        --bg-page: #f0f9ff;      
+        --glass-bg: rgba(255, 255, 255, 0.85); /* Sedikit lebih pekat agar tulisan jelas */
+        --text-main: #334155;    
+        --input-bg: #ffffff;     
+        --shadow: 0 10px 40px -10px rgba(2, 132, 199, 0.2); 
+        --success: #22c55e;
+        --danger: #ef4444;
+        --warning: #f59e0b;
+    }
 
-        * { box-sizing: border-box; outline: none; }
+    * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
+    
+    body {
+        font-family: 'Outfit', sans-serif;
+        background-color: var(--bg-page);
+        background-image: 
+            radial-gradient(circle at 10% 20%, rgba(6, 182, 212, 0.15) 0%, transparent 40%),
+            radial-gradient(circle at 90% 80%, rgba(2, 132, 199, 0.15) 0%, transparent 40%);
+        color: var(--text-main);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 20px 15px; /* Margin luar lebih kecil di HP */
+        margin: 0;
+    }
+
+    .container {
+        width: 100%;
+        max-width: 600px;
+        background: var(--glass-bg);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid white;
+        border-radius: 24px;
+        padding: 30px 20px; /* Padding dalam dikurangi sedikit */
+        box-shadow: var(--shadow);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .container::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 6px;
+        background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+
+    .header { text-align: center; margin-bottom: 25px; }
+    .header h2 {
+        font-size: 1.6rem; margin: 0;
+        background: linear-gradient(135deg, var(--primary), var(--accent));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-weight: 800;
+    }
+    .header p { color: #64748b; font-size: 0.85rem; margin-top: 5px; font-weight: 500; letter-spacing: 1px; }
+
+    .input-group { margin-bottom: 15px; }
+    .input-group label {
+        display: block; margin-bottom: 6px; font-size: 0.8rem;
+        font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.5px;
+    }
+
+    .form-control {
+        width: 100%; padding: 12px 14px;
+        background: var(--input-bg); border: 2px solid #e2e8f0;
+        border-radius: 12px; color: var(--text-main);
+        font-size: 0.95rem; font-family: 'Outfit', sans-serif;
+        transition: all 0.25s ease;
+    }
+    .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.1); }
+
+    /* --- LIST SISWA STYLING (PERBAIKAN UTAMA) --- */
+    .student-list-container {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 10px;
+        max-height: 60vh; /* Agar tidak terlalu panjang di HP */
+        overflow-y: auto;
+    }
+
+    .student-item {
+        display: flex;
+        justify-content: space-between; /* Default Desktop: Kiri Kanan */
+        align-items: center;
+        background: white;
+        padding: 12px 15px;
+        margin-bottom: 8px;
+        border-radius: 12px;
+        border: 1px solid #e2e8f0;
+        transition: transform 0.2s;
+    }
+    
+    .student-name {
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: #334155;
+        flex: 1;
+        padding-right: 15px;
+        line-height: 1.4;
+    }
+
+    .attendance-options {
+        display: flex;
+        gap: 8px;
+        flex-shrink: 0; /* Mencegah tombol gepeng */
+    }
+
+    /* Radio Wrapper */
+    .radio-option { position: relative; width: 36px; height: 36px; }
+    .radio-option input { 
+        position: absolute; width: 100%; height: 100%; 
+        opacity: 0; cursor: pointer; z-index: 2; 
+    }
+
+    /* LABEL LINGKARAN (FINAL FIX CENTER) */
+    .radio-label {
+        width: 100%; 
+        height: 100%;
+        display: grid;          /* Menggunakan Grid lebih ampuh untuk center */
+        place-items: center;    /* Center Horizontal & Vertikal Sempurna */
+        background: #f1f5f9;
+        border-radius: 50%;
+        font-weight: 700;        
+        font-size: 0.85rem;      
+        cursor: pointer;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        color: #94a3b8;
         
-        body {
-            font-family: 'Outfit', sans-serif;
-            background-color: var(--bg-page);
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(6, 182, 212, 0.15) 0%, transparent 40%),
-                radial-gradient(circle at 90% 80%, rgba(2, 132, 199, 0.15) 0%, transparent 40%);
-            color: var(--text-main);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start; /* Agar scroll aman di HP */
-            padding: 40px 15px;
-            margin: 0;
-        }
+        /* Reset total untuk layout */
+        padding: 0;      
+        margin: 0;       
+        line-height: 0; /* Membunuh jarak baris font */
+        padding-top: 1px; /* Koreksi mikro optikal (kadang font terlihat naik 1px) */
+    }
 
-        .container {
-            width: 100%;
-            max-width: 600px;
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid white;
-            border-radius: 24px;
-            padding: 40px 30px;
-            box-shadow: var(--shadow);
-            position: relative;
-            overflow: hidden;
-        }
+    /* Warna Aktif */
+    .radio-option input[value="H"]:checked + .radio-label { background: var(--success); color: white; box-shadow: 0 4px 12px rgba(34, 197, 94, 0.4); }
+    .radio-option input[value="S"]:checked + .radio-label { background: var(--warning); color: white; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4); }
+    .radio-option input[value="I"]:checked + .radio-label { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.4); }
+    .radio-option input[value="A"]:checked + .radio-label { background: var(--danger); color: white; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4); }
 
-        .container::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 6px;
-            background: linear-gradient(90deg, var(--primary), var(--accent));
-        }
+    .radio-label:hover { transform: scale(1.05); }
 
-        .header { text-align: center; margin-bottom: 30px; }
-        .header h2 {
-            font-size: 1.8rem; margin: 0;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-weight: 800;
-        }
-        .header p { color: #64748b; font-size: 0.9rem; margin-top: 5px; font-weight: 500; letter-spacing: 1px; }
+    .btn-submit {
+        width: 100%; padding: 16px; margin-top: 20px;
+        background: linear-gradient(135deg, var(--primary), var(--accent));
+        color: white; border: none; border-radius: 12px;
+        font-size: 1rem; font-weight: 800; letter-spacing: 1px;
+        cursor: pointer; box-shadow: 0 10px 25px -5px rgba(2, 132, 199, 0.4);
+        text-transform: uppercase;
+    }
 
-        .input-group { margin-bottom: 20px; }
-        .input-group label {
-            display: block; margin-bottom: 8px; font-size: 0.85rem;
-            font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.5px;
-        }
-
-        .form-control {
-            width: 100%; padding: 14px 16px;
-            background: var(--input-bg); border: 2px solid #e2e8f0;
-            border-radius: 12px; color: var(--text-main);
-            font-size: 1rem; font-family: 'Outfit', sans-serif;
-            transition: all 0.25s ease;
-        }
-        .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.1); }
-
-        /* LIST SISWA STYLING */
-        .student-list-container {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 15px;
-            max-height: 500px;
-            overflow-y: auto;
-        }
-
+    /* --- RESPONSIVE MOBILE FIX (LAYOUT HP) --- */
+    @media (max-width: 480px) {
+        .container { padding: 25px 15px; }
+        
+        /* Ubah layout kartu siswa menjadi susun ke bawah */
         .student-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: white;
-            padding: 12px;
-            margin-bottom: 10px;
-            border-radius: 10px;
-            border: 1px solid #e2e8f0;
-            transition: transform 0.2s;
+            flex-direction: column; /* Susun Vertikal */
+            align-items: flex-start; /* Rata Kiri */
+            padding: 15px;
+            gap: 12px; /* Jarak antara Nama dan Tombol */
         }
-        
+
         .student-name {
-            font-weight: 600;
-            font-size: 0.95rem;
-            flex: 1;
-            padding-right: 10px; /* Jarak agar nama panjang tidak nempel tombol */
+            font-size: 1rem; /* Nama lebih besar */
+            padding-right: 0;
+            width: 100%;
+            border-bottom: 1px dashed #f1f5f9; /* Garis pemisah tipis */
+            padding-bottom: 8px;
+            margin-bottom: 0;
         }
 
         .attendance-options {
-            display: flex;
-            gap: 6px; /* Jarak antar tombol sedikit renggang */
+            width: 100%;
+            justify-content: space-between; /* Tombol disebar merata */
+            gap: 0; /* Gap diatur oleh justify-content */
         }
 
-        /* Radio Button Custom yang Cantik (FIXED CENTER) */
-        .radio-option {
-            position: relative;
-        }
-        
-        .radio-option input {
-            position: absolute;
-            opacity: 0;
-            cursor: pointer;
-            width: 100%; height: 100%; /* Agar area klik luas */
-            z-index: 2;
-        }
-
-        /* --- BAGIAN YANG DIPERBAIKI --- */
-        .radio-label {
-            width: 40px; 
-            height: 40px;
-            display: flex;
-            justify-content: center; /* Center Kiri-Kanan */
-            align-items: center;     /* Center Atas-Bawah */
-            background: #f1f5f9;
-            border-radius: 50%;
-            font-weight: 700;        
-            font-size: 0.95rem;      
-            cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 2px solid transparent;
-            color: #64748b;
-            
-            /* KUNCI PERBAIKAN: */
-            padding: 0;      
-            line-height: 1;  
-            margin: 0;       
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05); 
-        }
-
-        /* Warna per status */
-        .radio-option input[value="H"]:checked + .radio-label { background: var(--success); color: white; box-shadow: 0 4px 10px rgba(34, 197, 94, 0.3); }
-        .radio-option input[value="S"]:checked + .radio-label { background: var(--warning); color: white; box-shadow: 0 4px 10px rgba(245, 158, 11, 0.3); }
-        .radio-option input[value="I"]:checked + .radio-label { background: var(--primary); color: white; box-shadow: 0 4px 10px rgba(2, 132, 199, 0.3); }
-        .radio-option input[value="A"]:checked + .radio-label { background: var(--danger); color: white; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3); }
-
-        /* Hover effects */
-        .radio-label:hover { 
-            filter: brightness(0.95); 
-            transform: scale(1.05); 
-        }
-
-        .btn-submit {
-            width: 100%; padding: 16px; margin-top: 25px;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            color: white; border: none; border-radius: 12px;
-            font-size: 1.05rem; font-weight: 700; letter-spacing: 1px;
-            cursor: pointer; box-shadow: 0 10px 25px -5px rgba(2, 132, 199, 0.4);
-            transition: all 0.3s ease; text-transform: uppercase;
-        }
-        .btn-submit:disabled { background: #cbd5e1; cursor: not-allowed; box-shadow: none; }
-        .btn-submit:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 15px 30px -5px rgba(6, 182, 212, 0.5); }
-
-        /* Loader Animation */
-        .loader {
-            width: 20px; height: 20px;
-            border: 3px solid #FFF; border-bottom-color: transparent;
-            border-radius: 50%; display: inline-block;
-            animation: rotation 1s linear infinite;
-        }
-        .loader-dark { border-color: var(--primary); border-bottom-color: transparent; }
-        @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        .loading-overlay {
-            position: absolute; top:0; left:0; width:100%; height:100%;
-            background: rgba(255,255,255,0.8); z-index: 10;
-            display: flex; justify-content: center; align-items: center;
-            flex-direction: column; color: var(--primary); font-weight: 600;
-        }
-    </style>
+        /* Ukuran tombol di HP sedikit lebih kecil tapi pas */
+        .radio-option { width: 42px; height: 42px; }
+        .radio-label { font-size: 1rem; }
+    }
+    
+    /* Loader & Overlay */
+    .loader { width: 24px; height: 24px; border: 3px solid #FFF; border-bottom-color: transparent; border-radius: 50%; display: inline-block; animation: rotation 1s linear infinite; }
+    .loader-dark { border-color: var(--primary); border-bottom-color: transparent; }
+    @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .loading-overlay { position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(255,255,255,0.9); z-index: 10; display: flex; justify-content: center; align-items: center; flex-direction: column; color: var(--primary); font-weight: 700; }
+</style>
 </head>
 <body>
 
