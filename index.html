@@ -10,7 +10,7 @@
     <style>
     :root {
         --primary: #0284c7;      
-        --accent: #06b6d4;       
+        --accent: #06b6d4;        
         --bg-page: #f0f9ff;      
         --glass-bg: rgba(255, 255, 255, 0.95); 
         --text-main: #334155;    
@@ -118,12 +118,10 @@
 
     .attendance-options {
         display: flex;
-        gap: 6px; /* Jarak antar kotak lebih rapat */
+        gap: 6px; /* Jarak antar kotak */
         flex-shrink: 0; 
     }
 
-    /* --- GAYA BARU: KOTAK TOMBOL (SQUARE BUTTONS) --- */
-    /* Kita buang fixed width/height agar fleksibel, tapi kita set min-width */
     .radio-option { 
         position: relative; 
         width: auto; 
@@ -135,27 +133,32 @@
         opacity: 0; cursor: pointer; z-index: 2; 
     }
 
-    /* LABEL KOTAK TUMPUL */
+    /* --- PERBAIKAN POSISI HURUF (CENTERING) --- */
     .radio-label {
         /* Ukuran Kotak Tetap */
         width: 40px; 
         height: 38px;
         
+        /* Flexbox untuk Center Mutlak */
         display: flex;
-        justify-content: center;
-        align-items: center;
+        justify-content: center; /* Kanan-Kiri Center */
+        align-items: center;     /* Atas-Bawah Center */
+        
+        /* Reset spacing agar huruf tidak lari */
+        padding: 0;
+        margin: 0;
+        line-height: 1; /* PENTING: Menghilangkan jarak baris font */
         
         background: #fff; 
-        border: 2px solid #e2e8f0; /* Pakai border agar kotak terlihat jelas */
-        border-radius: 8px; /* Sudut tumpul (Rounded), BUKAN LINGKARAN */
+        border: 2px solid #e2e8f0; 
+        border-radius: 8px; 
         
         font-weight: 800;        
         font-size: 0.9rem;       
         cursor: pointer;
         transition: all 0.2s ease;
-        color: #94a3b8; /* Warna text abu-abu saat mati */
+        color: #94a3b8; 
         
-        /* Anti-select text */
         -webkit-user-select: none;
         -moz-user-select: none;
         -ms-user-select: none;
@@ -165,7 +168,7 @@
     /* Hover State */
     .radio-label:hover { border-color: #cbd5e1; color: #64748b; }
 
-    /* --- STATE ACTIVE (Saat Dipilih) - Warna Solid Penuh --- */
+    /* --- STATE ACTIVE (Saat Dipilih) --- */
     
     /* Hadir - Hijau */
     .radio-option input[value="H"]:checked + .radio-label { 
@@ -212,7 +215,7 @@
         text-transform: uppercase;
     }
 
-    /* --- RESPONSIVE MOBILE FIX (LAYOUT HP) --- */
+    /* --- RESPONSIVE MOBILE FIX --- */
     @media (max-width: 480px) {
         .container { padding: 25px 15px; }
         
@@ -234,18 +237,20 @@
 
         .attendance-options {
             width: 100%;
-            justify-content: space-between; /* Tombol menyebar rata */
+            justify-content: space-between; 
             gap: 8px; 
         }
 
-        /* Di HP tombol sedikit lebih lebar agar enak dipencet */
         .radio-label { 
-            width: 100%; /* Full width di grid flex */
-            height: 44px; /* Lebih tinggi untuk jempol */
+            width: 100%; 
+            height: 44px; /* Tinggi di HP */
             font-size: 1rem;
+            /* Pastikan properti centering tetap aktif di HP */
+            padding: 0;
+            line-height: 1;
         }
         
-        .radio-option { flex: 1; } /* Agar semua kotak sama lebar */
+        .radio-option { flex: 1; }
     }
     
     .loader { width: 24px; height: 24px; border: 3px solid #FFF; border-bottom-color: transparent; border-radius: 50%; display: inline-block; animation: rotation 1s linear infinite; }
@@ -379,8 +384,6 @@
                 }
 
                 students.forEach((nama, index) => {
-                    /* --- PEMBARUAN DI SINI: GANTI JADI HURUF & HAPUS IKON --- */
-                    /* Kita pakai Huruf H, S, I, A agar jelas dan pasti senter di dalam kotak */
                     
                     const html = `
                     <div class="student-item">
@@ -463,6 +466,7 @@
             }
         })
         .catch(err => {
+            // Fallback untuk antisipasi CORS error di beberapa browser mobile
             alert('✅ Data Terkirim! (Cek Spreadsheet)');
             document.getElementById('attendanceForm').reset();
             document.getElementById('emailGuru').value = localStorage.getItem('userEmail');
