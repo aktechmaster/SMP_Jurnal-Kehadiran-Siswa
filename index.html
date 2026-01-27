@@ -160,9 +160,11 @@
         .radio-option input[value="I"]:checked + .radio-label { background: var(--primary); color: white; box-shadow: 0 4px 10px rgba(2, 132, 199, 0.3); }
         .radio-option input[value="A"]:checked + .radio-label { background: var(--danger); color: white; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3); }
 
-        /* Hover effects */
-        .radio-label:hover { filter: brightness(0.95); }
-
+        /* Pastikan efek hover tetap jalan */
+.radio-label:hover { 
+    filter: brightness(0.95); 
+    transform: scale(1.05); /* Efek membesar sedikit saat disentuh */
+}
         .btn-submit {
             width: 100%; padding: 16px; margin-top: 25px;
             background: linear-gradient(135deg, var(--primary), var(--accent));
