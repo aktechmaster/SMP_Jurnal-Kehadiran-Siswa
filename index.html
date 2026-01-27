@@ -129,21 +129,30 @@
             cursor: pointer;
         }
 
-        .radio-label {
-            width: 35px;
-            height: 35px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: #f1f5f9;
-            border-radius: 50%;
-            font-weight: bold;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            border: 2px solid transparent;
-            color: #64748b;
-        }
+        /* GANTI BAGIAN INI */
+.radio-label {
+    width: 40px; /* Saya perbesar sedikit biar lebih lega */
+    height: 40px;
+    display: flex;
+    justify-content: center; /* Center Kiri-Kanan */
+    align-items: center;     /* Center Atas-Bawah */
+    background: #f1f5f9;
+    border-radius: 50%;
+    font-weight: 700;        /* Bold tebal */
+    font-size: 0.95rem;      /* Ukuran font pas */
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 2px solid transparent;
+    color: #64748b;
+    
+    /* KUNCI PERBAIKAN "MATA BELONG": */
+    padding: 0;      /* Hapus ganjalan padding */
+    line-height: 1;  /* Hapus jarak baris yang bikin teks naik/turun */
+    margin: 0;       /* Hapus margin liar */
+    
+    /* Tambahan kosmetik biar makin rapi */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05); 
+}
 
         /* Warna per status */
         .radio-option input[value="H"]:checked + .radio-label { background: var(--success); color: white; box-shadow: 0 4px 10px rgba(34, 197, 94, 0.3); }
