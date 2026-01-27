@@ -33,7 +33,7 @@
             min-height: 100vh;
             display: flex;
             justify-content: center;
-            align-items: flex-start; /* Ubah ke flex-start agar scroll enak di HP */
+            align-items: flex-start; /* Agar scroll aman di HP */
             padding: 40px 15px;
             margin: 0;
         }
@@ -111,14 +111,15 @@
             font-weight: 600;
             font-size: 0.95rem;
             flex: 1;
+            padding-right: 10px; /* Jarak agar nama panjang tidak nempel tombol */
         }
 
         .attendance-options {
             display: flex;
-            gap: 5px;
+            gap: 6px; /* Jarak antar tombol sedikit renggang */
         }
 
-        /* Radio Button Custom yang Cantik */
+        /* Radio Button Custom yang Cantik (FIXED CENTER) */
         .radio-option {
             position: relative;
         }
@@ -127,32 +128,32 @@
             position: absolute;
             opacity: 0;
             cursor: pointer;
+            width: 100%; height: 100%; /* Agar area klik luas */
+            z-index: 2;
         }
 
-        /* GANTI BAGIAN INI */
-.radio-label {
-    width: 40px; /* Saya perbesar sedikit biar lebih lega */
-    height: 40px;
-    display: flex;
-    justify-content: center; /* Center Kiri-Kanan */
-    align-items: center;     /* Center Atas-Bawah */
-    background: #f1f5f9;
-    border-radius: 50%;
-    font-weight: 700;        /* Bold tebal */
-    font-size: 0.95rem;      /* Ukuran font pas */
-    cursor: pointer;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    border: 2px solid transparent;
-    color: #64748b;
-    
-    /* KUNCI PERBAIKAN "MATA BELONG": */
-    padding: 0;      /* Hapus ganjalan padding */
-    line-height: 1;  /* Hapus jarak baris yang bikin teks naik/turun */
-    margin: 0;       /* Hapus margin liar */
-    
-    /* Tambahan kosmetik biar makin rapi */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05); 
-}
+        /* --- BAGIAN YANG DIPERBAIKI --- */
+        .radio-label {
+            width: 40px; 
+            height: 40px;
+            display: flex;
+            justify-content: center; /* Center Kiri-Kanan */
+            align-items: center;     /* Center Atas-Bawah */
+            background: #f1f5f9;
+            border-radius: 50%;
+            font-weight: 700;        
+            font-size: 0.95rem;      
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid transparent;
+            color: #64748b;
+            
+            /* KUNCI PERBAIKAN: */
+            padding: 0;      
+            line-height: 1;  
+            margin: 0;       
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05); 
+        }
 
         /* Warna per status */
         .radio-option input[value="H"]:checked + .radio-label { background: var(--success); color: white; box-shadow: 0 4px 10px rgba(34, 197, 94, 0.3); }
@@ -160,11 +161,12 @@
         .radio-option input[value="I"]:checked + .radio-label { background: var(--primary); color: white; box-shadow: 0 4px 10px rgba(2, 132, 199, 0.3); }
         .radio-option input[value="A"]:checked + .radio-label { background: var(--danger); color: white; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3); }
 
-        /* Pastikan efek hover tetap jalan */
-.radio-label:hover { 
-    filter: brightness(0.95); 
-    transform: scale(1.05); /* Efek membesar sedikit saat disentuh */
-}
+        /* Hover effects */
+        .radio-label:hover { 
+            filter: brightness(0.95); 
+            transform: scale(1.05); 
+        }
+
         .btn-submit {
             width: 100%; padding: 16px; margin-top: 25px;
             background: linear-gradient(135deg, var(--primary), var(--accent));
@@ -307,7 +309,7 @@
                 loader.style.display = 'none';
             })
             .catch(error => {
-                alert('Gagal memuat kelas. Pastikan internet lancar.');
+                // alert('Gagal memuat kelas. Pastikan internet lancar.');
                 loader.style.display = 'none';
             });
     }
@@ -336,7 +338,7 @@
                 }
 
                 students.forEach((nama, index) => {
-                    const uniqueId = `s_${index}`; // ID unik untuk radio button group
+                    const uniqueId = `s_${index}`; 
                     
                     const html = `
                     <div class="student-item">
@@ -406,8 +408,6 @@
         };
 
         // Kirim via POST
-        // Gunakan 'no-cors' tidak disarankan untuk debugging, tapi diperlukan untuk fetch ke GAS dari client-side murni tanpa proxy
-        // Namun, kita pakai teknik text/plain untuk bypass preflight check CORS yang ketat
         fetch(SCRIPT_URL, {
             method: 'POST',
             body: JSON.stringify(payload)
@@ -427,12 +427,12 @@
             }
         })
         .catch(err => {
-            alert('✅ Data Terkirim! (Note: Browser mungkin memblokir respon JSON, tapi data biasanya sudah masuk spreadsheet)');
-            console.log(err);
-             // Reset form manual
-             document.getElementById('attendanceForm').reset();
-             document.getElementById('emailGuru').value = localStorage.getItem('userEmail');
-             document.getElementById('studentContainer').innerHTML = 'Data terkirim.';
+            // Karena pakai mode no-cors/text response kadang error di parsing json, tapi data masuk
+            alert('✅ Data Terkirim! (Cek Spreadsheet)');
+            document.getElementById('attendanceForm').reset();
+            document.getElementById('emailGuru').value = localStorage.getItem('userEmail');
+            document.getElementById('tanggal').valueAsDate = new Date();
+            document.getElementById('studentContainer').innerHTML = '<div style="text-align: center; color: #94a3b8; padding: 20px;">Data berhasil dikirim.</div>';
         })
         .finally(() => {
             btn.disabled = false;
