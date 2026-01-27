@@ -122,8 +122,8 @@
         flex-shrink: 0; 
     }
 
-    /* --- GAYA BARU: MODERN SQUARE BUTTONS --- */
-    /* Kita buang fixed width/height agar fleksibel */
+    /* --- GAYA BARU: KOTAK TOMBOL (SQUARE BUTTONS) --- */
+    /* Kita buang fixed width/height agar fleksibel, tapi kita set min-width */
     .radio-option { 
         position: relative; 
         width: auto; 
@@ -137,29 +137,35 @@
 
     /* LABEL KOTAK TUMPUL */
     .radio-label {
-        /* Ukuran Kotak */
+        /* Ukuran Kotak Tetap */
         width: 40px; 
-        height: 36px;
+        height: 38px;
         
         display: flex;
         justify-content: center;
         align-items: center;
         
-        background: #fff; /* Awal putih */
-        border: 2px solid #e2e8f0; /* Pakai border agar tegas */
-        border-radius: 8px; /* Sudut tumpul, bukan bulat */
+        background: #fff; 
+        border: 2px solid #e2e8f0; /* Pakai border agar kotak terlihat jelas */
+        border-radius: 8px; /* Sudut tumpul (Rounded), BUKAN LINGKARAN */
         
         font-weight: 800;        
         font-size: 0.9rem;       
         cursor: pointer;
         transition: all 0.2s ease;
-        color: #cbd5e1; /* Warna text mati */
+        color: #94a3b8; /* Warna text abu-abu saat mati */
+        
+        /* Anti-select text */
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
     }
 
     /* Hover State */
-    .radio-label:hover { border-color: #94a3b8; color: #64748b; }
+    .radio-label:hover { border-color: #cbd5e1; color: #64748b; }
 
-    /* STATE ACTIVE (Saat Dipilih) - Warna Solid Penuh */
+    /* --- STATE ACTIVE (Saat Dipilih) - Warna Solid Penuh --- */
     
     /* Hadir - Hijau */
     .radio-option input[value="H"]:checked + .radio-label { 
@@ -229,14 +235,13 @@
         .attendance-options {
             width: 100%;
             justify-content: space-between; /* Tombol menyebar rata */
-            gap: 5px; 
+            gap: 8px; 
         }
 
         /* Di HP tombol sedikit lebih lebar agar enak dipencet */
         .radio-label { 
             width: 100%; /* Full width di grid flex */
-            min-width: 50px;
-            height: 42px; 
+            height: 44px; /* Lebih tinggi untuk jempol */
             font-size: 1rem;
         }
         
@@ -374,9 +379,9 @@
                 }
 
                 students.forEach((nama, index) => {
-                    const uniqueId = `s_${index}`; 
+                    /* --- PEMBARUAN DI SINI: GANTI JADI HURUF & HAPUS IKON --- */
+                    /* Kita pakai Huruf H, S, I, A agar jelas dan pasti senter di dalam kotak */
                     
-                    /* --- METODE BARU: KOTAK HURUF TEGAS --- */
                     const html = `
                     <div class="student-item">
                         <div class="student-name">${index + 1}. ${nama}</div>
