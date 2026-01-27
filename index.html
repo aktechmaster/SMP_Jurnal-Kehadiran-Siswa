@@ -12,7 +12,7 @@
         --primary: #0284c7;      
         --accent: #06b6d4;       
         --bg-page: #f0f9ff;      
-        --glass-bg: rgba(255, 255, 255, 0.85); /* Sedikit lebih pekat agar tulisan jelas */
+        --glass-bg: rgba(255, 255, 255, 0.95); /* Sedikit lebih pekat agar tulisan jelas */
         --text-main: #334155;    
         --input-bg: #ffffff;     
         --shadow: 0 10px 40px -10px rgba(2, 132, 199, 0.2); 
@@ -85,7 +85,7 @@
     }
     .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.1); }
 
-    /* --- LIST SISWA STYLING (PERBAIKAN UTAMA) --- */
+    /* --- LIST SISWA STYLING --- */
     .student-list-container {
         background: #f8fafc;
         border: 1px solid #e2e8f0;
@@ -123,18 +123,21 @@
     }
 
     /* Radio Wrapper */
-    .radio-option { position: relative; width: 36px; height: 36px; }
+    .radio-option { position: relative; width: 38px; height: 38px; }
     .radio-option input { 
         position: absolute; width: 100%; height: 100%; 
         opacity: 0; cursor: pointer; z-index: 2; 
     }
 
-    /* LABEL LINGKARAN (FINAL FIX CENTER) */
+    /* LABEL LINGKARAN (FIXED) */
     .radio-label {
         width: 100%; 
         height: 100%;
-        display: grid;          /* Menggunakan Grid lebih ampuh untuk center */
-        place-items: center;    /* Center Horizontal & Vertikal Sempurna */
+        /* Menggunakan Flexbox lebih stabil daripada Grid untuk Text */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        
         background: #f1f5f9;
         border-radius: 50%;
         font-weight: 700;        
@@ -143,11 +146,13 @@
         transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         color: #94a3b8;
         
-        /* Reset total untuk layout */
+        /* Reset Margin/Padding & Line Height Normal */
         padding: 0;      
         margin: 0;       
-        line-height: 0; /* Membunuh jarak baris font */
-        padding-top: 1px; /* Koreksi mikro optikal (kadang font terlihat naik 1px) */
+        line-height: normal; 
+        
+        /* Koreksi Optikal: Text sering terlihat "naik" sedikit, kita beri padding bawah tipis */
+        padding-bottom: 2px;
     }
 
     /* Warna Aktif */
@@ -171,31 +176,33 @@
     @media (max-width: 480px) {
         .container { padding: 25px 15px; }
         
-        /* Ubah layout kartu siswa menjadi susun ke bawah */
+        /* 1. Kartu menjadi vertikal (Nama atas, Tombol bawah) */
         .student-item {
-            flex-direction: column; /* Susun Vertikal */
-            align-items: flex-start; /* Rata Kiri */
+            flex-direction: column; 
+            align-items: flex-start; 
             padding: 15px;
-            gap: 12px; /* Jarak antara Nama dan Tombol */
+            gap: 12px; 
         }
 
+        /* 2. Nama Siswa Full Width dengan garis pemisah tipis */
         .student-name {
-            font-size: 1rem; /* Nama lebih besar */
+            font-size: 1rem; 
             padding-right: 0;
             width: 100%;
-            border-bottom: 1px dashed #f1f5f9; /* Garis pemisah tipis */
-            padding-bottom: 8px;
+            border-bottom: 1px dashed #e2e8f0; 
+            padding-bottom: 10px;
             margin-bottom: 0;
         }
 
+        /* 3. Tombol menyebar rata (Justify Space Between) */
         .attendance-options {
             width: 100%;
-            justify-content: space-between; /* Tombol disebar merata */
-            gap: 0; /* Gap diatur oleh justify-content */
+            justify-content: space-between; 
+            gap: 0; 
         }
 
-        /* Ukuran tombol di HP sedikit lebih kecil tapi pas */
-        .radio-option { width: 42px; height: 42px; }
+        /* 4. Ukuran tombol sedikit lebih besar agar mudah disentuh di HP */
+        .radio-option { width: 44px; height: 44px; }
         .radio-label { font-size: 1rem; }
     }
     
