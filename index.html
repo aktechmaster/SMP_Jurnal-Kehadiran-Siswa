@@ -12,7 +12,7 @@
         --primary: #0284c7;      
         --accent: #06b6d4;       
         --bg-page: #f0f9ff;      
-        --glass-bg: rgba(255, 255, 255, 0.95); /* Sedikit lebih pekat agar tulisan jelas */
+        --glass-bg: rgba(255, 255, 255, 0.95); 
         --text-main: #334155;    
         --input-bg: #ffffff;     
         --shadow: 0 10px 40px -10px rgba(2, 132, 199, 0.2); 
@@ -34,7 +34,7 @@
         display: flex;
         justify-content: center;
         align-items: flex-start;
-        padding: 20px 15px; /* Margin luar lebih kecil di HP */
+        padding: 20px 15px;
         margin: 0;
     }
 
@@ -46,7 +46,7 @@
         -webkit-backdrop-filter: blur(20px);
         border: 1px solid white;
         border-radius: 24px;
-        padding: 30px 20px; /* Padding dalam dikurangi sedikit */
+        padding: 30px 20px;
         box-shadow: var(--shadow);
         position: relative;
         overflow: hidden;
@@ -91,13 +91,13 @@
         border: 1px solid #e2e8f0;
         border-radius: 12px;
         padding: 10px;
-        max-height: 60vh; /* Agar tidak terlalu panjang di HP */
+        max-height: 60vh;
         overflow-y: auto;
     }
 
     .student-item {
         display: flex;
-        justify-content: space-between; /* Default Desktop: Kiri Kanan */
+        justify-content: space-between; 
         align-items: center;
         background: white;
         padding: 12px 15px;
@@ -119,43 +119,40 @@
     .attendance-options {
         display: flex;
         gap: 8px;
-        flex-shrink: 0; /* Mencegah tombol gepeng */
+        flex-shrink: 0; 
     }
 
     /* Radio Wrapper */
-    .radio-option { position: relative; width: 38px; height: 38px; }
+    .radio-option { position: relative; width: 40px; height: 40px; } /* Ukuran sedikit diperbesar agar ikon pas */
     .radio-option input { 
         position: absolute; width: 100%; height: 100%; 
         opacity: 0; cursor: pointer; z-index: 2; 
     }
 
-    /* LABEL LINGKARAN (FIXED) */
+    /* LABEL LINGKARAN DENGAN METODE IKON */
     .radio-label {
         width: 100%; 
         height: 100%;
-        /* Menggunakan Flexbox lebih stabil daripada Grid untuk Text */
         display: flex;
         justify-content: center;
         align-items: center;
         
         background: #f1f5f9;
         border-radius: 50%;
-        font-weight: 700;        
-        font-size: 0.85rem;      
+        
+        /* Font size untuk IKON */
+        font-size: 1.1rem;      
         cursor: pointer;
         transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         color: #94a3b8;
         
-        /* Reset Margin/Padding & Line Height Normal */
+        /* Reset Margin/Padding */
         padding: 0;      
         margin: 0;       
-        line-height: normal; 
-        
-        /* Koreksi Optikal: Text sering terlihat "naik" sedikit, kita beri padding bawah tipis */
-        padding-bottom: 2px;
+        line-height: 1; 
     }
 
-    /* Warna Aktif */
+    /* Warna Aktif - Ikon Putih saat aktif */
     .radio-option input[value="H"]:checked + .radio-label { background: var(--success); color: white; box-shadow: 0 4px 12px rgba(34, 197, 94, 0.4); }
     .radio-option input[value="S"]:checked + .radio-label { background: var(--warning); color: white; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4); }
     .radio-option input[value="I"]:checked + .radio-label { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.4); }
@@ -176,7 +173,6 @@
     @media (max-width: 480px) {
         .container { padding: 25px 15px; }
         
-        /* 1. Kartu menjadi vertikal (Nama atas, Tombol bawah) */
         .student-item {
             flex-direction: column; 
             align-items: flex-start; 
@@ -184,7 +180,6 @@
             gap: 12px; 
         }
 
-        /* 2. Nama Siswa Full Width dengan garis pemisah tipis */
         .student-name {
             font-size: 1rem; 
             padding-right: 0;
@@ -194,19 +189,16 @@
             margin-bottom: 0;
         }
 
-        /* 3. Tombol menyebar rata (Justify Space Between) */
         .attendance-options {
             width: 100%;
             justify-content: space-between; 
             gap: 0; 
         }
 
-        /* 4. Ukuran tombol sedikit lebih besar agar mudah disentuh di HP */
         .radio-option { width: 44px; height: 44px; }
-        .radio-label { font-size: 1rem; }
+        .radio-label { font-size: 1.2rem; } /* Ikon lebih besar di HP */
     }
     
-    /* Loader & Overlay */
     .loader { width: 24px; height: 24px; border: 3px solid #FFF; border-bottom-color: transparent; border-radius: 50%; display: inline-block; animation: rotation 1s linear infinite; }
     .loader-dark { border-color: var(--primary); border-bottom-color: transparent; }
     @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -255,11 +247,11 @@
         <div class="input-group">
             <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 8px;">
                 <label style="margin:0;">Daftar Presensi</label>
-                <div style="font-size: 0.7rem; color: #64748b;">
-                    <span style="color:var(--success)">H: Hadir</span> | 
-                    <span style="color:var(--warning)">S: Sakit</span> | 
-                    <span style="color:var(--primary)">I: Izin</span> | 
-                    <span style="color:var(--danger)">A: Alpha</span>
+                <div style="font-size: 0.7rem; color: #64748b; display: flex; gap: 8px;">
+                    <span style="color:var(--success)"><i class="fa-solid fa-check"></i> Hadir</span>
+                    <span style="color:var(--warning)"><i class="fa-solid fa-briefcase-medical"></i> Sakit</span>
+                    <span style="color:var(--primary)"><i class="fa-solid fa-envelope"></i> Izin</span>
+                    <span style="color:var(--danger)"><i class="fa-solid fa-xmark"></i> Alpha</span>
                 </div>
             </div>
             
@@ -275,7 +267,7 @@
         </button>
 
     </form>
-
+    
     <div style="text-align: center; margin-top: 20px; font-size: 0.75rem; color: #cbd5e1;">
         &copy; 2026 Smart Attendance System
     </div>
@@ -284,30 +276,22 @@
 
 <script>
     // --- KONFIGURASI ---
-    // GANTI URL INI DENGAN URL WEB APP DARI GOOGLE APPS SCRIPT ANDA
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzuguXclPQLd5v8qSz0xlVA_c4wWpqLoNloUO7bTa-jW6fv-h_-Cn236BwgbdwJjaL8/exec'; 
 
     // --- INISIALISASI ---
     document.addEventListener('DOMContentLoaded', () => {
-        // Set Tanggal Hari Ini
         document.getElementById('tanggal').valueAsDate = new Date();
-        
-        // Load Email dari Local Storage
         const savedEmail = localStorage.getItem('userEmail');
         if (savedEmail) {
             document.getElementById('emailGuru').value = savedEmail;
         }
-
-        // Load Daftar Kelas saat awal buka
         loadClasses();
     });
 
-    // Simpan email saat diketik
     document.getElementById('emailGuru').addEventListener('input', function() {
         localStorage.setItem('userEmail', this.value);
     });
 
-    // Fungsi Load Kelas dari Spreadsheet
     function loadClasses() {
         const selectKelas = document.getElementById('kelas');
         const loader = document.getElementById('kelasLoader');
@@ -326,12 +310,10 @@
                 loader.style.display = 'none';
             })
             .catch(error => {
-                // alert('Gagal memuat kelas. Pastikan internet lancar.');
                 loader.style.display = 'none';
             });
     }
 
-    // Fungsi Load Siswa berdasarkan Kelas
     function loadSiswa() {
         const kelas = document.getElementById('kelas').value;
         const container = document.getElementById('studentContainer');
@@ -341,13 +323,12 @@
             return;
         }
 
-        // Tampilkan loading di dalam container
         container.innerHTML = '<div style="text-align: center; padding: 20px;"><span class="loader loader-dark"></span><br>Mengambil data siswa...</div>';
 
         fetch(SCRIPT_URL + `?action=getStudents&kelas=${kelas}`)
             .then(response => response.json())
             .then(students => {
-                container.innerHTML = ''; // Bersihkan loader
+                container.innerHTML = ''; 
                 
                 if (students.length === 0) {
                     container.innerHTML = '<div style="text-align: center;">Tidak ada data siswa.</div>';
@@ -357,25 +338,26 @@
                 students.forEach((nama, index) => {
                     const uniqueId = `s_${index}`; 
                     
+                    /* --- METODE BARU: MENGGUNAKAN IKON FONTAWESOME (LEBIH MUDAH DI-CENTER) --- */
                     const html = `
                     <div class="student-item">
                         <div class="student-name">${index + 1}. ${nama}</div>
                         <div class="attendance-options">
                             <div class="radio-option">
                                 <input type="radio" name="status_${index}" value="H" checked data-name="${nama}">
-                                <label class="radio-label">H</label>
+                                <label class="radio-label"><i class="fa-solid fa-check"></i></label>
                             </div>
                             <div class="radio-option">
                                 <input type="radio" name="status_${index}" value="S" data-name="${nama}">
-                                <label class="radio-label">S</label>
+                                <label class="radio-label"><i class="fa-solid fa-briefcase-medical"></i></label>
                             </div>
                             <div class="radio-option">
                                 <input type="radio" name="status_${index}" value="I" data-name="${nama}">
-                                <label class="radio-label">I</label>
+                                <label class="radio-label"><i class="fa-solid fa-envelope"></i></label>
                             </div>
                             <div class="radio-option">
                                 <input type="radio" name="status_${index}" value="A" data-name="${nama}">
-                                <label class="radio-label">A</label>
+                                <label class="radio-label"><i class="fa-solid fa-xmark"></i></label>
                             </div>
                         </div>
                     </div>`;
@@ -394,7 +376,6 @@
         const btn = document.getElementById('btnKirim');
         const overlay = document.getElementById('mainLoader');
         
-        // Cek apakah ada siswa yang diload
         const studentItems = document.querySelectorAll('.student-item');
         if (studentItems.length === 0) {
             alert("Belum ada data siswa yang dimuat.");
@@ -404,7 +385,6 @@
         btn.disabled = true;
         overlay.style.display = 'flex';
 
-        // Kumpulkan data presensi
         let presensiData = [];
         studentItems.forEach((item, index) => {
             const selectedRadio = document.querySelector(`input[name="status_${index}"]:checked`);
@@ -416,7 +396,6 @@
             }
         });
 
-        // Data Payload
         const payload = {
             email: document.getElementById('emailGuru').value,
             tanggal: document.getElementById('tanggal').value,
@@ -424,7 +403,6 @@
             presensi: presensiData
         };
 
-        // Kirim via POST
         fetch(SCRIPT_URL, {
             method: 'POST',
             body: JSON.stringify(payload)
@@ -433,10 +411,8 @@
         .then(data => {
             if (data.result === 'success') {
                 alert('✅ Data Berhasil Disimpan!');
-                // Reset form kecuali email
                 document.getElementById('attendanceForm').reset();
                 document.getElementById('studentContainer').innerHTML = '<div style="text-align: center; color: #94a3b8; padding: 20px;">Silakan pilih kelas terlebih dahulu.</div>';
-                // Restore email dan tanggal hari ini
                 document.getElementById('emailGuru').value = localStorage.getItem('userEmail');
                 document.getElementById('tanggal').valueAsDate = new Date();
             } else {
@@ -444,7 +420,6 @@
             }
         })
         .catch(err => {
-            // Karena pakai mode no-cors/text response kadang error di parsing json, tapi data masuk
             alert('✅ Data Terkirim! (Cek Spreadsheet)');
             document.getElementById('attendanceForm').reset();
             document.getElementById('emailGuru').value = localStorage.getItem('userEmail');
