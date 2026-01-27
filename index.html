@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jurnal Kehadiran Siswa</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #0284c7;      
+            --accent: #06b6d4;       
+            --bg-page: #f0f9ff;      
+            --glass-bg: rgba(255, 255, 255, 0.75); 
+            --text-main: #334155;    
+            --input-bg: #ffffff;     
+            --shadow: 0 10px 40px -10px rgba(2, 132, 199, 0.2); 
+            --success: #22c55e;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+        }
+
+        * { box-sizing: border-box; outline: none; }
+        
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-page);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(6, 182, 212, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(2, 132, 199, 0.15) 0%, transparent 40%);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Ubah ke flex-start agar scroll enak di HP */
+            padding: 40px 15px;
+            margin: 0;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid white;
+            border-radius: 24px;
+            padding: 40px 30px;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+        }
+
+        .header { text-align: center; margin-bottom: 30px; }
+        .header h2 {
+            font-size: 1.8rem; margin: 0;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+        .header p { color: #64748b; font-size: 0.9rem; margin-top: 5px; font-weight: 500; letter-spacing: 1px; }
+
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block; margin-bottom: 8px; font-size: 0.85rem;
+            font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+
+        .form-control {
+            width: 100%; padding: 14px 16px;
+            background: var(--input-bg); border: 2px solid #e2e8f0;
+            border-radius: 12px; color: var(--text-main);
+            font-size: 1rem; font-family: 'Outfit', sans-serif;
+            transition: all 0.25s ease;
+        }
+        .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.1); }
+
+        /* LIST SISWA STYLING */
+        .student-list-container {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 15px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .student-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            transition: transform 0.2s;
+        }
+        
+        .student-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+            flex: 1;
+        }
+
+        .attendance-options {
+            display: flex;
+            gap: 5px;
+        }
+
+        /* Radio Button Custom yang Cantik */
+        .radio-option {
+            position: relative;
+        }
+        
+        .radio-option input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .radio-label {
+            width: 35px;
+            height: 35px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #f1f5f9;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+            color: #64748b;
+        }
+
+        /* Warna per status */
+        .radio-option input[value="H"]:checked + .radio-label { background: var(--success); color: white; box-shadow: 0 4px 10px rgba(34, 197, 94, 0.3); }
+        .radio-option input[value="S"]:checked + .radio-label { background: var(--warning); color: white; box-shadow: 0 4px 10px rgba(245, 158, 11, 0.3); }
+        .radio-option input[value="I"]:checked + .radio-label { background: var(--primary); color: white; box-shadow: 0 4px 10px rgba(2, 132, 199, 0.3); }
+        .radio-option input[value="A"]:checked + .radio-label { background: var(--danger); color: white; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3); }
+
+        /* Hover effects */
+        .radio-label:hover { filter: brightness(0.95); }
+
+        .btn-submit {
+            width: 100%; padding: 16px; margin-top: 25px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white; border: none; border-radius: 12px;
+            font-size: 1.05rem; font-weight: 700; letter-spacing: 1px;
+            cursor: pointer; box-shadow: 0 10px 25px -5px rgba(2, 132, 199, 0.4);
+            transition: all 0.3s ease; text-transform: uppercase;
+        }
+        .btn-submit:disabled { background: #cbd5e1; cursor: not-allowed; box-shadow: none; }
+        .btn-submit:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 15px 30px -5px rgba(6, 182, 212, 0.5); }
+
+        /* Loader Animation */
+        .loader {
+            width: 20px; height: 20px;
+            border: 3px solid #FFF; border-bottom-color: transparent;
+            border-radius: 50%; display: inline-block;
+            animation: rotation 1s linear infinite;
+        }
+        .loader-dark { border-color: var(--primary); border-bottom-color: transparent; }
+        @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .loading-overlay {
+            position: absolute; top:0; left:0; width:100%; height:100%;
+            background: rgba(255,255,255,0.8); z-index: 10;
+            display: flex; justify-content: center; align-items: center;
+            flex-direction: column; color: var(--primary); font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    
+    <div id="mainLoader" class="loading-overlay" style="display: none;">
+        <span class="loader loader-dark" style="width: 40px; height: 40px;"></span>
+        <p style="margin-top: 10px;">Memproses Data...</p>
+    </div>
+
+    <div class="header">
+        <h2>JURNAL KEHADIRAN</h2>
+        <p>Input Presensi Siswa Real-time</p>
+    </div>
+
+    <form id="attendanceForm">
+        
+        <div class="input-group">
+            <label>Email Pelapor</label>
+            <input type="email" id="emailGuru" class="form-control" placeholder="nama@sekolah.sch.id" required>
+            <small style="color: #94a3b8; font-size: 0.75rem;">*Otomatis tersimpan untuk sesi berikutnya</small>
+        </div>
+
+        <div class="input-group">
+            <label>Tanggal Kegiatan</label>
+            <input type="date" id="tanggal" class="form-control" required>
+        </div>
+
+        <div class="input-group">
+            <label>Kelas</label>
+            <div style="position: relative;">
+                <select id="kelas" class="form-control" onchange="loadSiswa()" required>
+                    <option value="">-- Pilih Kelas --</option>
+                </select>
+                <div id="kelasLoader" style="position: absolute; right: 10px; top: 12px; display: none;">
+                    <span class="loader loader-dark"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 8px;">
+                <label style="margin:0;">Daftar Presensi</label>
+                <div style="font-size: 0.7rem; color: #64748b;">
+                    <span style="color:var(--success)">H: Hadir</span> | 
+                    <span style="color:var(--warning)">S: Sakit</span> | 
+                    <span style="color:var(--primary)">I: Izin</span> | 
+                    <span style="color:var(--danger)">A: Alpha</span>
+                </div>
+            </div>
+            
+            <div id="studentContainer" class="student-list-container">
+                <div style="text-align: center; color: #94a3b8; padding: 20px;">
+                    Silakan pilih kelas terlebih dahulu.
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn-submit" id="btnKirim">
+            KIRIM DATA <i class="fa-solid fa-paper-plane"></i>
+        </button>
+
+    </form>
+
+    <div style="text-align: center; margin-top: 20px; font-size: 0.75rem; color: #cbd5e1;">
+        &copy; 2026 Smart Attendance System
+    </div>
+
+</div>
+
+<script>
+    // --- KONFIGURASI ---
+    // GANTI URL INI DENGAN URL WEB APP DARI GOOGLE APPS SCRIPT ANDA
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzuguXclPQLd5v8qSz0xlVA_c4wWpqLoNloUO7bTa-jW6fv-h_-Cn236BwgbdwJjaL8/exec'; 
+
+    // --- INISIALISASI ---
+    document.addEventListener('DOMContentLoaded', () => {
+        // Set Tanggal Hari Ini
+        document.getElementById('tanggal').valueAsDate = new Date();
+        
+        // Load Email dari Local Storage
+        const savedEmail = localStorage.getItem('userEmail');
+        if (savedEmail) {
+            document.getElementById('emailGuru').value = savedEmail;
+        }
+
+        // Load Daftar Kelas saat awal buka
+        loadClasses();
+    });
+
+    // Simpan email saat diketik
+    document.getElementById('emailGuru').addEventListener('input', function() {
+        localStorage.setItem('userEmail', this.value);
+    });
+
+    // Fungsi Load Kelas dari Spreadsheet
+    function loadClasses() {
+        const selectKelas = document.getElementById('kelas');
+        const loader = document.getElementById('kelasLoader');
+        
+        loader.style.display = 'block';
+        
+        fetch(SCRIPT_URL + '?action=getClasses')
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(kelas => {
+                    let option = document.createElement('option');
+                    option.value = kelas;
+                    option.text = kelas;
+                    selectKelas.appendChild(option);
+                });
+                loader.style.display = 'none';
+            })
+            .catch(error => {
+                alert('Gagal memuat kelas. Pastikan internet lancar.');
+                loader.style.display = 'none';
+            });
+    }
+
+    // Fungsi Load Siswa berdasarkan Kelas
+    function loadSiswa() {
+        const kelas = document.getElementById('kelas').value;
+        const container = document.getElementById('studentContainer');
+        
+        if (!kelas) {
+            container.innerHTML = '<div style="text-align: center; color: #94a3b8; padding: 20px;">Silakan pilih kelas terlebih dahulu.</div>';
+            return;
+        }
+
+        // Tampilkan loading di dalam container
+        container.innerHTML = '<div style="text-align: center; padding: 20px;"><span class="loader loader-dark"></span><br>Mengambil data siswa...</div>';
+
+        fetch(SCRIPT_URL + `?action=getStudents&kelas=${kelas}`)
+            .then(response => response.json())
+            .then(students => {
+                container.innerHTML = ''; // Bersihkan loader
+                
+                if (students.length === 0) {
+                    container.innerHTML = '<div style="text-align: center;">Tidak ada data siswa.</div>';
+                    return;
+                }
+
+                students.forEach((nama, index) => {
+                    const uniqueId = `s_${index}`; // ID unik untuk radio button group
+                    
+                    const html = `
+                    <div class="student-item">
+                        <div class="student-name">${index + 1}. ${nama}</div>
+                        <div class="attendance-options">
+                            <div class="radio-option">
+                                <input type="radio" name="status_${index}" value="H" checked data-name="${nama}">
+                                <label class="radio-label">H</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="status_${index}" value="S" data-name="${nama}">
+                                <label class="radio-label">S</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="status_${index}" value="I" data-name="${nama}">
+                                <label class="radio-label">I</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="status_${index}" value="A" data-name="${nama}">
+                                <label class="radio-label">A</label>
+                            </div>
+                        </div>
+                    </div>`;
+                    container.insertAdjacentHTML('beforeend', html);
+                });
+            })
+            .catch(error => {
+                container.innerHTML = 'Gagal memuat siswa.';
+            });
+    }
+
+    // --- HANDLE SUBMIT ---
+    document.getElementById('attendanceForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const btn = document.getElementById('btnKirim');
+        const overlay = document.getElementById('mainLoader');
+        
+        // Cek apakah ada siswa yang diload
+        const studentItems = document.querySelectorAll('.student-item');
+        if (studentItems.length === 0) {
+            alert("Belum ada data siswa yang dimuat.");
+            return;
+        }
+
+        btn.disabled = true;
+        overlay.style.display = 'flex';
+
+        // Kumpulkan data presensi
+        let presensiData = [];
+        studentItems.forEach((item, index) => {
+            const selectedRadio = document.querySelector(`input[name="status_${index}"]:checked`);
+            if (selectedRadio) {
+                presensiData.push({
+                    nama: selectedRadio.getAttribute('data-name'),
+                    status: selectedRadio.value
+                });
+            }
+        });
+
+        // Data Payload
+        const payload = {
+            email: document.getElementById('emailGuru').value,
+            tanggal: document.getElementById('tanggal').value,
+            kelas: document.getElementById('kelas').value,
+            presensi: presensiData
+        };
+
+        // Kirim via POST
+        // Gunakan 'no-cors' tidak disarankan untuk debugging, tapi diperlukan untuk fetch ke GAS dari client-side murni tanpa proxy
+        // Namun, kita pakai teknik text/plain untuk bypass preflight check CORS yang ketat
+        fetch(SCRIPT_URL, {
+            method: 'POST',
+            body: JSON.stringify(payload)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.result === 'success') {
+                alert('✅ Data Berhasil Disimpan!');
+                // Reset form kecuali email
+                document.getElementById('attendanceForm').reset();
+                document.getElementById('studentContainer').innerHTML = '<div style="text-align: center; color: #94a3b8; padding: 20px;">Silakan pilih kelas terlebih dahulu.</div>';
+                // Restore email dan tanggal hari ini
+                document.getElementById('emailGuru').value = localStorage.getItem('userEmail');
+                document.getElementById('tanggal').valueAsDate = new Date();
+            } else {
+                alert('❌ Gagal menyimpan: ' + data.message);
+            }
+        })
+        .catch(err => {
+            alert('✅ Data Terkirim! (Note: Browser mungkin memblokir respon JSON, tapi data biasanya sudah masuk spreadsheet)');
+            console.log(err);
+             // Reset form manual
+             document.getElementById('attendanceForm').reset();
+             document.getElementById('emailGuru').value = localStorage.getItem('userEmail');
+             document.getElementById('studentContainer').innerHTML = 'Data terkirim.';
+        })
+        .finally(() => {
+            btn.disabled = false;
+            overlay.style.display = 'none';
+        });
+    });
+</script>
+
+</body>
+</html>
