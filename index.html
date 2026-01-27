@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jurnal Kehadiran Siswa</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
@@ -118,47 +118,84 @@
 
     .attendance-options {
         display: flex;
-        gap: 8px;
+        gap: 6px; /* Jarak antar kotak lebih rapat */
         flex-shrink: 0; 
     }
 
-    /* Radio Wrapper */
-    .radio-option { position: relative; width: 40px; height: 40px; } /* Ukuran sedikit diperbesar agar ikon pas */
+    /* --- GAYA BARU: MODERN SQUARE BUTTONS --- */
+    /* Kita buang fixed width/height agar fleksibel */
+    .radio-option { 
+        position: relative; 
+        width: auto; 
+        height: auto; 
+    } 
+    
     .radio-option input { 
         position: absolute; width: 100%; height: 100%; 
         opacity: 0; cursor: pointer; z-index: 2; 
     }
 
-    /* LABEL LINGKARAN DENGAN METODE IKON */
+    /* LABEL KOTAK TUMPUL */
     .radio-label {
-        width: 100%; 
-        height: 100%;
+        /* Ukuran Kotak */
+        width: 40px; 
+        height: 36px;
+        
         display: flex;
         justify-content: center;
         align-items: center;
         
-        background: #f1f5f9;
-        border-radius: 50%;
+        background: #fff; /* Awal putih */
+        border: 2px solid #e2e8f0; /* Pakai border agar tegas */
+        border-radius: 8px; /* Sudut tumpul, bukan bulat */
         
-        /* Font size untuk IKON */
-        font-size: 1.1rem;      
+        font-weight: 800;        
+        font-size: 0.9rem;       
         cursor: pointer;
-        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        color: #94a3b8;
-        
-        /* Reset Margin/Padding */
-        padding: 0;      
-        margin: 0;       
-        line-height: 1; 
+        transition: all 0.2s ease;
+        color: #cbd5e1; /* Warna text mati */
     }
 
-    /* Warna Aktif - Ikon Putih saat aktif */
-    .radio-option input[value="H"]:checked + .radio-label { background: var(--success); color: white; box-shadow: 0 4px 12px rgba(34, 197, 94, 0.4); }
-    .radio-option input[value="S"]:checked + .radio-label { background: var(--warning); color: white; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4); }
-    .radio-option input[value="I"]:checked + .radio-label { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.4); }
-    .radio-option input[value="A"]:checked + .radio-label { background: var(--danger); color: white; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4); }
+    /* Hover State */
+    .radio-label:hover { border-color: #94a3b8; color: #64748b; }
 
-    .radio-label:hover { transform: scale(1.05); }
+    /* STATE ACTIVE (Saat Dipilih) - Warna Solid Penuh */
+    
+    /* Hadir - Hijau */
+    .radio-option input[value="H"]:checked + .radio-label { 
+        background: var(--success); 
+        border-color: var(--success);
+        color: white; 
+        box-shadow: 0 4px 10px rgba(34, 197, 94, 0.3); 
+        transform: translateY(-2px);
+    }
+    
+    /* Sakit - Kuning */
+    .radio-option input[value="S"]:checked + .radio-label { 
+        background: var(--warning); 
+        border-color: var(--warning);
+        color: white; 
+        box-shadow: 0 4px 10px rgba(245, 158, 11, 0.3);
+        transform: translateY(-2px);
+    }
+    
+    /* Izin - Biru */
+    .radio-option input[value="I"]:checked + .radio-label { 
+        background: var(--primary); 
+        border-color: var(--primary);
+        color: white; 
+        box-shadow: 0 4px 10px rgba(2, 132, 199, 0.3);
+        transform: translateY(-2px);
+    }
+    
+    /* Alpha - Merah */
+    .radio-option input[value="A"]:checked + .radio-label { 
+        background: var(--danger); 
+        border-color: var(--danger);
+        color: white; 
+        box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
+        transform: translateY(-2px);
+    }
 
     .btn-submit {
         width: 100%; padding: 16px; margin-top: 20px;
@@ -191,12 +228,19 @@
 
         .attendance-options {
             width: 100%;
-            justify-content: space-between; 
-            gap: 0; 
+            justify-content: space-between; /* Tombol menyebar rata */
+            gap: 5px; 
         }
 
-        .radio-option { width: 44px; height: 44px; }
-        .radio-label { font-size: 1.2rem; } /* Ikon lebih besar di HP */
+        /* Di HP tombol sedikit lebih lebar agar enak dipencet */
+        .radio-label { 
+            width: 100%; /* Full width di grid flex */
+            min-width: 50px;
+            height: 42px; 
+            font-size: 1rem;
+        }
+        
+        .radio-option { flex: 1; } /* Agar semua kotak sama lebar */
     }
     
     .loader { width: 24px; height: 24px; border: 3px solid #FFF; border-bottom-color: transparent; border-radius: 50%; display: inline-block; animation: rotation 1s linear infinite; }
@@ -247,12 +291,6 @@
         <div class="input-group">
             <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 8px;">
                 <label style="margin:0;">Daftar Presensi</label>
-                <div style="font-size: 0.7rem; color: #64748b; display: flex; gap: 8px;">
-                    <span style="color:var(--success)"><i class="fa-solid fa-check"></i> Hadir</span>
-                    <span style="color:var(--warning)"><i class="fa-solid fa-briefcase-medical"></i> Sakit</span>
-                    <span style="color:var(--primary)"><i class="fa-solid fa-envelope"></i> Izin</span>
-                    <span style="color:var(--danger)"><i class="fa-solid fa-xmark"></i> Alpha</span>
-                </div>
             </div>
             
             <div id="studentContainer" class="student-list-container">
@@ -338,26 +376,26 @@
                 students.forEach((nama, index) => {
                     const uniqueId = `s_${index}`; 
                     
-                    /* --- METODE BARU: MENGGUNAKAN IKON FONTAWESOME (LEBIH MUDAH DI-CENTER) --- */
+                    /* --- METODE BARU: KOTAK HURUF TEGAS --- */
                     const html = `
                     <div class="student-item">
                         <div class="student-name">${index + 1}. ${nama}</div>
                         <div class="attendance-options">
                             <div class="radio-option">
                                 <input type="radio" name="status_${index}" value="H" checked data-name="${nama}">
-                                <label class="radio-label"><i class="fa-solid fa-check"></i></label>
+                                <label class="radio-label">H</label>
                             </div>
                             <div class="radio-option">
                                 <input type="radio" name="status_${index}" value="S" data-name="${nama}">
-                                <label class="radio-label"><i class="fa-solid fa-briefcase-medical"></i></label>
+                                <label class="radio-label">S</label>
                             </div>
                             <div class="radio-option">
                                 <input type="radio" name="status_${index}" value="I" data-name="${nama}">
-                                <label class="radio-label"><i class="fa-solid fa-envelope"></i></label>
+                                <label class="radio-label">I</label>
                             </div>
                             <div class="radio-option">
                                 <input type="radio" name="status_${index}" value="A" data-name="${nama}">
-                                <label class="radio-label"><i class="fa-solid fa-xmark"></i></label>
+                                <label class="radio-label">A</label>
                             </div>
                         </div>
                     </div>`;
