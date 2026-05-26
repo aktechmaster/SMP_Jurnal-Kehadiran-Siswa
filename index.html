@@ -296,7 +296,7 @@
 
         <div class="input-group">
             <label>Tanggal Kegiatan</label>
-            <input type="date" id="tanggal" class="form-control" required>
+            <input type="date" id="tanggal" class="form-control" onchange="loadSiswa()" required>
         </div>
 
         <div class="input-group">
@@ -377,58 +377,99 @@
 
     function loadSiswa() {
         const kelas = document.getElementById('kelas').value;
+        const tanggal = document.getElementById('tanggal').value; // Mengambil nilai tanggal input
         const container = document.getElementById('studentContainer');
+        const btnKirim = document.getElementById('btnKirim');
         
         if (!kelas) {
             container.innerHTML = '<div style="text-align: center; color: #94a3b8; padding: 20px;">Silakan pilih kelas terlebih dahulu.</div>';
+            btnKirim.disabled = false;
             return;
         }
 
-        container.innerHTML = '<div style="text-align: center; padding: 20px;"><span class="loader loader-dark"></span><br>Mengambil data siswa...</div>';
+        if (!tanggal) {
+            alert("Silakan isi tanggal kegiatan terlebih dahulu.");
+            document.getElementById('kelas').value = "";
+            return;
+        }
 
-        fetch(SCRIPT_URL + `?action=getStudents&kelas=${kelas}`)
+        // Tampilkan loader awal saat memeriksa ke Google Sheets
+        container.innerHTML = '<div style="text-align: center; padding: 20px;"><span class="loader loader-dark"></span><br>Memeriksa riwayat presensi...</div>';
+        btnKirim.disabled = true; // Kunci tombol kirim selama proses verifikasi
+
+        // --- PROSES 1: Cek duplikasi ke Google Sheets (Aksi Baru) ---
+        fetch(SCRIPT_URL + `?action=checkAttendance&tanggal=${tanggal}&kelas=${kelas}`)
             .then(response => response.json())
-            .then(students => {
-                container.innerHTML = ''; 
-                
-                if (students.length === 0) {
-                    container.innerHTML = '<div style="text-align: center;">Tidak ada data siswa.</div>';
-                    return;
-                }
-
-                students.forEach((nama, index) => {
+            .then(checkResult => {
+                if (checkResult.exists) {
+                    // JIKA DATA SUDAH ADA: Blokir pengisian dan tampilkan pesan error cerdas
+                    const tglIndo = tanggal.split('-').reverse().join('/');
+                    container.innerHTML = `
+                        <div style="text-align: center; color: var(--danger); padding: 30px 10px; font-weight: 700;">
+                            <i class="fa-solid fa-circle-xmark" style="font-size: 2.5rem; margin-bottom: 12px;"></i>
+                            <br>MAAF, PRESENSI TERKUNCI!
+                            <p style="color: #64748b; font-weight: 500; font-size: 0.85rem; margin-top: 8px; line-height: 1.5;">
+                                Jurnal kelas <b>${kelas}</b> untuk tanggal <b>${tglIndo}</b> sudah diisi sebelumnya.<br>
+                                Tidak diizinkan mengisi ulang untuk menghindari data ganda.
+                            </p>
+                        </div>`;
+                    btnKirim.disabled = true; // Pastikan tombol kirim tetap mati/terkunci
+                } else {
+                    // JIKA DATA BELUM ADA: Lanjutkan memuat nama-nama siswa (Fungsi Asli Anda)
+                    container.innerHTML = '<div style="text-align: center; padding: 20px;"><span class="loader loader-dark"></span><br>Mengambil data siswa...</div>';
                     
-                    const html = `
-                    <div class="student-item">
-                        <div class="student-name">${index + 1}. ${nama}</div>
-                        <div class="attendance-options">
-                            <div class="radio-option">
-                                <input type="radio" name="status_${index}" value="H" checked data-name="${nama}">
-                                <label class="radio-label">H</label>
-                            </div>
-                            <div class="radio-option">
-                                <input type="radio" name="status_${index}" value="S" data-name="${nama}">
-                                <label class="radio-label">S</label>
-                            </div>
-                            <div class="radio-option">
-                                <input type="radio" name="status_${index}" value="I" data-name="${nama}">
-                                <label class="radio-label">I</label>
-                            </div>
-                            <div class="radio-option">
-                                <input type="radio" name="status_${index}" value="A" data-name="${nama}">
-                                <label class="radio-label">A</label>
-                            </div>
-                        </div>
-                    </div>`;
-                    container.insertAdjacentHTML('beforeend', html);
-                });
+                    fetch(SCRIPT_URL + `?action=getStudents&kelas=${kelas}`)
+                        .then(response => response.json())
+                        .then(students => {
+                            container.innerHTML = ''; 
+                            
+                            if (students.length === 0) {
+                                container.innerHTML = '<div style="text-align: center;">Tidak ada data siswa.</div>';
+                                btnKirim.disabled = false;
+                                return;
+                            }
+
+                            // Loop generator element HTML siswa (Fungsi Asli Anda tetap utuh di sini)
+                            students.forEach((nama, index) => {
+                                const html = `
+                                <div class="student-item">
+                                    <div class="student-name">${index + 1}. ${nama}</div>
+                                    <div class="attendance-options">
+                                        <div class="radio-option">
+                                            <input type="radio" name="status_${index}" value="H" checked data-name="${nama}">
+                                            <label class="radio-label">H</label>
+                                        </div>
+                                        <div class="radio-option">
+                                            <input type="radio" name="status_${index}" value="S" data-name="${nama}">
+                                            <label class="radio-label">S</label>
+                                        </div>
+                                        <div class="radio-option">
+                                            <input type="radio" name="status_${index}" value="I" data-name="${nama}">
+                                            <label class="radio-label">I</label>
+                                        </div>
+                                        <div class="radio-option">
+                                            <input type="radio" name="status_${index}" value="A" data-name="${nama}">
+                                            <label class="radio-label">A</label>
+                                        </div>
+                                    </div>
+                                </div>`;
+                                container.insertAdjacentHTML('beforeend', html);
+                            });
+                            btnKirim.disabled = false; // Buka kunci tombol kirim karena aman untuk di-input
+                        })
+                        .catch(error => {
+                            container.innerHTML = 'Gagal memuat siswa.';
+                            btnKirim.disabled = false;
+                        });
+                }
             })
             .catch(error => {
-                container.innerHTML = 'Gagal memuat siswa.';
+                container.innerHTML = 'Gagal memverifikasi status kehadiran ke server.';
+                btnKirim.disabled = false;
             });
     }
 
-    // --- HANDLE SUBMIT ---
+    // --- HANDLE SUBMIT (Tetap menggunakan kode asli Anda) ---
     document.getElementById('attendanceForm').addEventListener('submit', function(e) {
         e.preventDefault();
 
@@ -479,7 +520,6 @@
             }
         })
         .catch(err => {
-            // Fallback untuk antisipasi CORS error di beberapa browser mobile
             alert('✅ Data Terkirim! (Cek Spreadsheet)');
             document.getElementById('attendanceForm').reset();
             document.getElementById('emailGuru').value = localStorage.getItem('userEmail');
